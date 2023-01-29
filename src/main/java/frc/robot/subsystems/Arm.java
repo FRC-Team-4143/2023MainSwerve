@@ -7,6 +7,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 public class Arm extends SubsystemBase{
     // private CANSparkMax elevatorMotor;
     // private SparkMaxPIDController m_pidController;
@@ -15,11 +22,20 @@ public class Arm extends SubsystemBase{
     private CANSparkMax clawMotor;
     private CANSparkMax elevatorMotor;
     private CANSparkMax rotatorMotor; 
+    private DoubleSolenoid m_doubleSolenoid;
+    private TalonFX toproller;
+    private TalonFX bottomroller;
 
     public Arm(){ 
         elevatorMotor = new CANSparkMax(10, MotorType.kBrushless);
         clawMotor = new CANSparkMax(3, MotorType.kBrushed);
         rotatorMotor = new CANSparkMax(5, MotorType.kBrushless);
+
+        toproller = new TalonFX(25);
+        bottomroller = new TalonFX(26);
+
+        m_doubleSolenoid =
+            new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 3, 2);
         
         // m_pidController = elevatorMotor.getPIDController();
         // m_encoder = elevatorMotor.getEncoder();
@@ -45,6 +61,15 @@ public class Arm extends SubsystemBase{
     // m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
     }
+
+    public void pickupRetract() {m_doubleSolenoid.set(DoubleSolenoid.Value.kForward);}
+
+    public void pickupExtend() {m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);}
+
+    public void rollersin() {toproller.set(ControlMode.PercentOutput,-.25); bottomroller.set(ControlMode.PercentOutput,-.25);}
+    public void rollersout() {toproller.set(ControlMode.PercentOutput,.25); bottomroller.set(ControlMode.PercentOutput,.25);}
+    public void rollerstop() {toproller.set(ControlMode.PercentOutput,0); bottomroller.set(ControlMode.PercentOutput,0);}
+    
 
     public void setClawSpeed(double clawSpeed){
         clawMotor.set(clawSpeed);
