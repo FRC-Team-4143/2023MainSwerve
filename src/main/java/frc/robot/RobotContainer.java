@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 //import edu.wpi.first.wpilibj.DoubleSolenoid;
 //import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -23,8 +24,8 @@ import frc.robot.subsystems.*;
  */
 public class RobotContainer {
     /* Controllers */
-    private final Joystick driver = new Joystick(0);
-    private final Joystick operator = new Joystick(1);
+    private final XboxController driver = new XboxController(0);
+    private final XboxController operator = new XboxController(1);
         /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
@@ -36,12 +37,13 @@ public class RobotContainer {
 
     //Arm buttons :)
     //Claw
+
     private final JoystickButton clawOpenButton = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton clawCloseButton = new JoystickButton(driver, XboxController.Button.kX.value);
 
     //Rotator
-    private final JoystickButton rotateUpButton = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton rotateDownButton = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton rotateUpButton = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton rotateDownButton = new JoystickButton(driver, XboxController.Button.kY.value);
 
     //Elevator
     private final JoystickButton elevatorUpButton = new JoystickButton(driver, XboxController.Button.kStart.value);
@@ -68,7 +70,7 @@ public class RobotContainer {
                 s_Swerve, 
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
+                () -> -driver.getRawAxis(rotationAxis) * 0.5, 
                 () -> robotCentric.getAsBoolean()
             )
         );
@@ -85,21 +87,22 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         /* Driver Buttons */
-        //zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        SmartDashboard.putData("Zero Gyro", new InstantCommand(() -> s_Swerve.zeroGyro()));
+        //myBoolean.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         pickupInButton.onTrue(new InstantCommand(() -> arm.pickupRetract()));
         pickupOutButton.onTrue(new InstantCommand(() -> arm.pickupExtend()));
 
-        rollerstopButton.onTrue(new InstantCommand(() -> arm.rollerstop()));
-        rollerinButton.onTrue(new InstantCommand(() -> arm.rollersin()));
-        rolleroutButton.onTrue(new InstantCommand(() -> arm.rollersout()));
-        
-        
+        //rollerstopButton.onTrue(new InstantCommand(() -> arm.rollerstop()).finallyDo(interrupted -> {arm.rollerstop();}));
+        rollerinButton.whileTrue(new RollersIn(arm));
+        rolleroutButton.whileTrue(new RollersOut(arm));
         clawCloseButton.whileTrue(new ClawClose(arm));
         clawOpenButton.whileTrue(new ClawOpen(arm));
         rotateUpButton.whileTrue(new RotateUp(arm));
         rotateDownButton.whileTrue(new RotateDown(arm));
         elevatorUpButton.whileTrue(new ElevatorUp(arm));
         elevatorDownButton.whileTrue(new ElevatorDown(arm));
+
+
     }
 
     /**

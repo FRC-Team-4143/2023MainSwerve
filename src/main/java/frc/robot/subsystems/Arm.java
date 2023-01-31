@@ -66,14 +66,14 @@ public class Arm extends SubsystemBase{
 
     public void pickupExtend() {m_doubleSolenoid.set(DoubleSolenoid.Value.kReverse);}
 
-    public void rollersin() {toproller.set(ControlMode.PercentOutput,-.25); bottomroller.set(ControlMode.PercentOutput,-.25);}
-    public void rollersout() {toproller.set(ControlMode.PercentOutput,.25); bottomroller.set(ControlMode.PercentOutput,.25);}
+    public void rollersin() {toproller.set(ControlMode.PercentOutput,-.75); bottomroller.set(ControlMode.PercentOutput,-.50);}
+    public void rollersout() {toproller.set(ControlMode.PercentOutput,.75); bottomroller.set(ControlMode.PercentOutput,.50);}
     public void rollerstop() {toproller.set(ControlMode.PercentOutput,0); bottomroller.set(ControlMode.PercentOutput,0);}
     
 
+    
     public void setClawSpeed(double clawSpeed){
         clawMotor.set(clawSpeed);
-        System.out.println("Sub is working");
     }
 
     public void setRotateSpeed(double rotateSpeed){

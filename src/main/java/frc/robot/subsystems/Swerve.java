@@ -100,9 +100,11 @@ public class Swerve extends SubsystemBase {
 
     public void zeroGyro(){
         gyro.setYaw(0);
+        System.out.println("Gyro has been zeroed");
     }
 
     public Rotation2d getYaw() {
+        SmartDashboard.putNumber("Gyro", gyro.getYaw());
         return (Constants.Swerve.invertGyro) ? Rotation2d.fromDegrees(360 - gyro.getYaw()) : Rotation2d.fromDegrees(gyro.getYaw());
     }
 

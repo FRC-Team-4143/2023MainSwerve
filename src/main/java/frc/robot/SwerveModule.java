@@ -12,6 +12,7 @@ import frc.lib.util.SwerveModuleConstants;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //import com.ctre.phoenix.sensors.CANCoder;
 
 public class SwerveModule {
@@ -73,6 +74,7 @@ public class SwerveModule {
     }
 
     private Rotation2d getAngle(){
+        SmartDashboard.putNumber("Mod " + moduleNumber + " Falcon Degrees", Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
         return Rotation2d.fromDegrees(Conversions.falconToDegrees(mAngleMotor.getSelectedSensorPosition(), Constants.Swerve.angleGearRatio));
     }
 
